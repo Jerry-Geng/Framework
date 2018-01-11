@@ -5,8 +5,8 @@ import android.widget.AdapterView;
 
 import java.util.List;
 
-/**
- * Created by Jerry on 2017/9/21.
+/**预绑定{@link AdapterView}的{@link AdapterFrame}
+ * @author JerryGeng
  */
 
 public abstract class AdapterWithViewFrame<T> extends AdapterFrame<T> {

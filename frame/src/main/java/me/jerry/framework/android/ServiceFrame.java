@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-/**
- * Created by Jerry on 2017/8/29.
+/**服务框架（未实现）
+ * @author JerryGeng
  */
-
 public class ServiceFrame extends Service {
 
     @Nullable

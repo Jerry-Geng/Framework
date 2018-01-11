@@ -1,7 +1,11 @@
 package me.jerry.framework.db;
 
 import me.jerry.framework.exception.CustomException;
-
+/**
+ * 数据库相关异常
+ * @author JerryGeng
+ *
+ */
 public class SqlException extends CustomException {
 
 

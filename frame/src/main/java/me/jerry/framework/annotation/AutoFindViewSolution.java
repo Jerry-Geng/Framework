@@ -14,22 +14,30 @@ import me.jerry.framework.exception.AnnotationException;
 import me.jerry.framework.utils.ReflactUtils;
 import me.jerry.framework.utils.StringUtils;
 
-/**
- * Created by Jerry on 2017/8/15.
+/**View反射注解解决器
+ * @author JerryGeng
  */
-
 public class AutoFindViewSolution implements AnnotationSolver {
+	/**
+	 * 包含定义需要反射的View的实体对象，如Activity，Fragment
+	 */
     private Object obj;
     private Context context;
+    /**
+     * 包含findViewById(int)方法的实体对象，如Activity,View
+     */
     private Object viewHolder;
+    /**
+     * 扩展实现了所有所需监听器的对象
+     */
     private Object listener;
 
     /**
      *
-     * @param viewDeclarer find view area. we will auto find the views declared in this object
+     * @param viewDeclarer 包含定义需要反射的View的实体对象，如Activity，Fragment
      * @param context android context.
-     * @param viewHolder which declared method findViewById, like view or activity.
-     * @param listener the object implements all the listeners declared in the annotation.
+     * @param viewHolder 包含findViewById(int)方法的实体对象，如Activity,View
+     * @param listener 扩展实现了所有所需监听器的对象，解决器将把该对象当作监听器实体绑定到View上，监听器必须是在View中定义了set方法才能绑定生效
      */
     public AutoFindViewSolution(Object viewDeclarer, Context context, Object viewHolder, Object listener) {
         obj = viewDeclarer;
@@ -37,7 +45,15 @@ public class AutoFindViewSolution implements AnnotationSolver {
         this.viewHolder = viewHolder;
         this.listener = listener;
     }
-
+    /**
+     * 反射规则
+     * <ul>
+     * <li>如果指定id，则按照指定的id反射view</li>
+     * <li>如果未指定id，如果java文件中view定义是驼峰式命名且布局文件中是下划线式命名，则匹配对应的命名反射view</li>
+     * <li>如果未至定id，且没有驼峰式和下划线式的匹配，则按照命名相同规则反射view</li>
+     * <li>监听器需在View或View的子类中定义了set方法才能绑定生效</li>
+     * </ul>
+     */
     @Override
     public void solve() {
         Log.i("auto find view", "solve start");

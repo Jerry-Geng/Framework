@@ -6,10 +6,9 @@ import javax.net.ssl.SSLHandshakeException;
 
 import me.jerry.framework.exception.CustomException;
 
-/**
- * Created by Jerry on 2017/8/7.
+/**网络异常exception
+ * @author JerryGeng
  */
-
 public class NetException extends CustomException {
 
     public final static int ERR_CODE_UNDEFINED = 0;

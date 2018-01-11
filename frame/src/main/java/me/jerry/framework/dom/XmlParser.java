@@ -19,11 +19,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.jerry.framework.utils.ReflactUtils;
-
+/**
+ * xml解析器
+ * @author JerryGeng
+ */
 public class XmlParser {
 
 	public final static String REG_FLOAT = "\\d+(\\.\\d*)?";
-
+	/**
+	 * 解析一段xml数据映射到对应的数据模型中
+	 * @param is
+	 * @param clazz
+	 * @return
+	 */
 	public static <T> T parser(InputStream is, Class clazz) {
 		try {
 			Document document = new SAXReader().read(is);
@@ -33,11 +41,21 @@ public class XmlParser {
 		}
 		return null;
 	}
-
+	/**
+	 * 解析一个document映射到对应的数据模型中
+	 * @param document
+	 * @param clazz
+	 * @return
+	 */
 	public static <T> T parser(Document document, Class clazz) {
 		return (T) parser(document.getRootElement(), clazz);
 	}
-
+	/**
+	 * 解析一个element节点映射到对应的数据模型中
+	 * @param element
+	 * @param clazz
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T parser(Element element, Class<T> clazz) {
 		// check if the class match the element
@@ -409,7 +427,11 @@ public class XmlParser {
 		}
 		return bean;
 	}
-
+	/**
+	 * 以xml形式保存一个数据模型的实体到指定的输出流中
+	 * @param os
+	 * @param data
+	 */
 	public static <T> void saveXml(OutputStream os, T data ) {
 		Document document = DocumentFactory.getInstance().createDocument();
 		newElement(document, data);
@@ -433,11 +455,11 @@ public class XmlParser {
 		}
 	}
 
-	public static <T> Element newElement(Branch parent, T data) {
+	private static <T> Element newElement(Branch parent, T data) {
 		return newElement(parent, data, null);
 	}
-
-	public static <T> Element newElement(Branch parent, T data, String name) {
+	
+	private static <T> Element newElement(Branch parent, T data, String name) {
 		Element child = null;
 		if(data.getClass() == int.class || data.getClass() == Integer.class) {
 			child = parent.addElement("integer");

@@ -4,33 +4,57 @@ package me.jerry.framework.comm;
 import android.os.Handler;
 import android.util.Log;
 
-/**
- * Created by Jerry on 2017/8/7.
+/**通讯线程
+ * @author JerryGeng
  */
-
 public class CommThread extends Thread {
+	/**
+	 * 线程已取消标记
+	 */
     private boolean canceled = false;
-
+    /**
+     * 通讯实体队列
+     */
     public CommunicationQuene communicationQuene;
-
+    /**
+     * 全局网络通信进程实体
+     */
     private INetProcess netProcess;
-
+    /**
+     * 全局事件监听器
+     */
     private ICommEventListener commEventListener;
-
+    /**
+     * 用于抛出事件的handler，绑定的线程是{@link CommManager#netThread }
+     */
     private Handler handler;
-
+    /**
+     * 全局重试次数
+     */
     private int globalRetryTimes = 0;
-
+    /**
+     * 全局连接超时时间
+     */
     private int globalConnectTimeout = 0;
-
+    /**
+     * 全局请求超时时间
+     */
     private int globalReadTimeout = 0;
-
+    /**
+     * 全局缓存开启标记
+     */
     private boolean globalCacheable = false;
-
-    public CommThread(CommunicationQuene communicationQuene, INetProcess netProcess, ICommEventListener commEndListener, Handler handler) {
+    /**
+     * 
+     * @param communicationQuene 通讯实体队列
+     * @param netProcess 指定的全局网络通信进程实体
+     * @param commEventListener 指定的全局事件监听器
+     * @param handler 用于抛出事件的handler
+     */
+    public CommThread(CommunicationQuene communicationQuene, INetProcess netProcess, ICommEventListener commEventListener, Handler handler) {
         this.communicationQuene = communicationQuene;
         this.netProcess = netProcess;
-        this.commEventListener = commEndListener;
+        this.commEventListener = commEventListener;
         this.handler = handler;
     }
 
@@ -53,6 +77,13 @@ public class CommThread extends Thread {
     public void cancel() {
         canceled = true;
     }
+    /**
+     * 从队列中读取通讯实体并发起通讯请求
+     * <ul>
+     * <li>所有请求参数以通讯实体中定义的优先，通讯实体中未定义的则采用全局设置</li>
+     * <li>请求结束自动存储缓存信息，执行超时重发等，或者将这些处理交给INetProcess</li>
+     * </ul>
+     */
     @Override
     public void run() {
 a:        while(!canceled) {

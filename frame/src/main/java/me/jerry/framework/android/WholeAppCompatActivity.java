@@ -1,31 +1,36 @@
 package me.jerry.framework.android;
 
 import android.app.FragmentTransaction;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import me.jerry.framework.R;
 import me.jerry.framework.annotation.AutoFindView;
 
-/**
- * Created by Jerry on 2017/8/21.
+/**AppCompatActivityFrame的单Activity模式
+ * @author JerryGeng
  */
-
 public class WholeAppCompatActivity extends AppCompatActivityFrame implements IWholeActivity {
-    private List<Class<? extends FragmentFrame>> list;
+	/**
+	 * 需要自动载入的初始Fragment
+	 */
+    Class<? extends FragmentFrame> mainFragmentClazz;
 
     public final static String TAG_MAIN = "main";
-
+    /**
+     * fragment主布局
+     */
     @AutoFindView
-    public FrameLayout fragment_main;
-
+    private FrameLayout fragment_main;
+    /**
+     * fragment栈
+     */
     private FragmentStack stack = new FragmentStack();
 
     @Override
@@ -41,15 +46,31 @@ public class WholeAppCompatActivity extends AppCompatActivityFrame implements IW
 
     @Override
     protected void loadData() {
-        list = FragmentManifest.findFragments(this);
+    	try {
+			ActivityInfo info = getPackageManager().getActivityInfo(getComponentName(), PackageManager.GET_META_DATA);
+			String mainFragment = info.metaData.getString("main_fragment");
+			mainFragmentClazz = (Class<? extends FragmentFrame>) Class.forName(mainFragment);
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+			this.finish();
+			Toast.makeText(getApplicationContext(), "请在meta-data中定义main_fragment", Toast.LENGTH_SHORT).show();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			this.finish();
+			Toast.makeText(getApplicationContext(), "main_fragment定义的类未找到", Toast.LENGTH_SHORT).show();
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+			this.finish();
+			Toast.makeText(getApplicationContext(), "main_fragment定义的类不属于FragmentFrame.class", Toast.LENGTH_SHORT).show();
+		}
     }
 
     @Override
     protected void initView(Bundle savedInstanceState, PersistableBundle persistentState) {
-        if(list != null && !list.isEmpty()) {
+        if(mainFragmentClazz != null) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             try {
-                FragmentFrame fragmentFrame = list.get(0).newInstance();
+                FragmentFrame fragmentFrame = mainFragmentClazz.newInstance();
                 fragmentFrame.setMainFragment(true);
                 transaction.add(R.id.fragment_main, fragmentFrame, TAG_MAIN);
                 transaction.setCustomAnimations(R.animator.fragment_slide_right_enter, R.animator.fragment_slide_right_exit);
@@ -163,55 +184,6 @@ public class WholeAppCompatActivity extends AppCompatActivityFrame implements IW
             transaction.show(stack.getTop());
         }
         transaction.commit();
-    }
-
-    public static class FragmentStack {
-        List<FragmentFrame> list = new ArrayList<>();
-
-        public FragmentFrame popFragment() {
-            FragmentFrame fragment = list.get(list.size() - 1);
-            list.remove(fragment);
-            return fragment;
-        }
-
-        public void pushFragment(FragmentFrame fragment) {
-            list.add(fragment);
-        }
-
-        public FragmentFrame getFragment(int index) {
-            return list.get(index);
-        }
-
-        public FragmentFrame getTop() {
-            if(list.size() > 0) {
-                return getFragment(list.size() - 1);
-            } else {
-                return null;
-            }
-        }
-
-        public FragmentFrame getBottom() {
-            if(list.size() > 0) {
-                return getFragment(0);
-            }
-            return null;
-        }
-
-        public void removeFromStack(FragmentFrame fragment) {
-            list.remove(fragment);
-        }
-
-        public boolean isEmpty() {
-            return list.isEmpty();
-        }
-
-        public int count() {
-            return list.size();
-        }
-
-        public boolean contains(FragmentFrame fragment) {
-            return list.contains(fragment);
-        }
     }
 
     @Override

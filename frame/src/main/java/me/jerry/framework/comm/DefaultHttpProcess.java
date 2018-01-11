@@ -14,10 +14,9 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by Jerry on 2017/8/7.
+/**框架默认提供的http通讯进程实体
+ * @author JerryGeng
  */
-
 public class DefaultHttpProcess implements INetProcess {
     @Override
     public byte[] process(CommEntity commEntity) throws NetException {
@@ -132,12 +131,16 @@ public class DefaultHttpProcess implements INetProcess {
         }
         return new byte[0];
     }
-
+    /**
+     * 内部不执行重试
+     */
     @Override
     public boolean innerRetry() {
         return false;
     }
-
+    /**
+     * 执行内部缓存
+     */
     @Override
     public boolean innerCache() {
         return true;

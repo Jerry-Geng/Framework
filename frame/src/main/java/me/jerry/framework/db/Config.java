@@ -13,20 +13,31 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Jerry on 2017/8/5.
+/**数据库配置文件解析工具类
+ * @author JerryGeng
  */
-
 public class Config {
-    public final static String CONFIG_FILE_NAME = "db_config.xml";
-    public final static String DB_PERFORM = "database";
-    public final static String TABLE_PERFORM = "table";
-    public final static String DB_NAME_PERFORM = "name";
-    public final static String DB_VERSION_PERFORM = "version";
-
+    private final static String CONFIG_FILE_NAME = "db_config.xml";
+    private final static String DB_PERFORM = "database";
+    private final static String TABLE_PERFORM = "table";
+    private final static String DB_NAME_PERFORM = "name";
+    private final static String DB_VERSION_PERFORM = "version";
+    /**
+     * 数据库配置信息类
+     * @author JerryGeng
+     */
     public static class DB_CONIFG {
+    	/**
+    	 * 数据库名称
+    	 */
         public final String DB_NAME;
+        /**
+         * 数据库版本
+         */
         public final int DB_VERSION;
+        /**
+         * 数据库中的表对应的数据类型列表
+         */
         public final List<Class<? extends TableEntity>> tableList;
 
         public DB_CONIFG(String dbName, int dbVersion, List<Class<? extends TableEntity>> tableList) {
@@ -40,8 +51,13 @@ public class Config {
             return "{DB_NAME=" + DB_NAME + "; DB_VERSION=" + DB_VERSION + "; tableList=" + tableList.toString();
         }
     }
-
-    public static DB_CONIFG findDatabase(String tableName, Context context) {
+    /**
+     * 根据数据库名称查找数据库信息
+     * @param tableName 数据库名称
+     * @param context
+     * @return 数据库信息
+     */
+    protected static DB_CONIFG findDatabase(String tableName, Context context) {
         try {
             InputStream is = context.getAssets().open(CONFIG_FILE_NAME);
             if(is == null) {
