@@ -1,0 +1,6 @@
+<manifest>
+    <fragment name="me.jerry.framework.plugin.PluginListFragment" />
+    <fragment name="me.jerry.framedemo.TestFragment" main="true" />
+    <fragment name="me.jerry.framedemo.TestFragment2" main="false" />
+    <fragment name="me.jerry.framedemo.ListFragment" />
+</manifest>

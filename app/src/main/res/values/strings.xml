@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FrameDemo</string>
+    <string name="bt_add_txt">insert</string>
+    <string name="bt_delete_txt">delete</string>
+    <string name="bt_modify_txt">modify</string>
+    <string name="bt_query_txt">query</string>
+    <string name="bt_communicate_txt">communicate</string>
+</resources>

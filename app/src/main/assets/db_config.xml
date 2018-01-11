@@ -1,0 +1,5 @@
+<config>
+    <database name='default_db.db' version='0'>
+        <table>me.jerry.framedemo.model.Book</table>
+    </database>
+</config>
